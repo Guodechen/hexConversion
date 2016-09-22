@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>进制转换器</title>
+	<style type="text/css" media="screen">
+		input{
+			width: 350px;
+			display: block;
+			margin-top: 10px;
+		}
+		button{
+			margin-top: 10px;
+		}
+	</style>
+</head>
+<body>
+	<input type="text" id="nowscale" placeholder="现在进制(支持2,4,8,16进制)  now base(2,4,8,16)">
+	<input type="text" id="input" placeholder="在此输入待转换数字 change number">
+	<input type="text" id="base" placeholder="转换进制（2,8,10,16最高16进制）after base(2,4,8,16)">
+	<button type="button"> click me </button>
+	<input type="text" id="output">
+</body>
+<script type="text/javascript">
+	window.onload = function () {
+		var input = document.getElementById('input')
+		var base = document.getElementById('base')
+		var nowscale = document.getElementById('nowscale')
+		var output = document.getElementById('output')
+		var button = document.getElementsByTagName('button')[0]
+		//click
+		button.onclick = function () {
+			var number = mulBase(+input.value, +base.value, +nowscale.value)
+			output.value = number
+		}
+
+
+
+		
+		function Stack() {
+			this.dataStore = []
+			this.top = 0
+			this.push = push
+			this.pop = pop
+			this.peek = peek
+			this.length = length
+			this.clear = clear
+		}
+
+		function push(element) {
+			this.dataStore[this.top++] = element
+		}
+
+		function pop() {
+			return this.dataStore[--this.top]
+		}
+
+		function peek() {
+			return this.dataStore[this.top - 1]
+		}
+
+		function length() {
+			return this.top
+		}
+
+		function clear() {
+			this.top = 0
+		}
+
+		function mulBase(num, base, nowScale) {
+			var s = new Stack()
+			var number
+			var nums
+			nums = ScaleToTen(num, nowScale)
+			do {
+				number = checkHeight(nums, base)
+				s.push(number)
+				nums = Math.floor(nums /= base)
+			}while(nums > 0)
+			var converted = ''
+			while(s.length() > 0) {
+				converted += s.pop()
+			}
+			return converted
+		}
+
+		function checkHeight(num, base) {
+			var number = num % base
+			switch(number){
+				case 10:
+					number = 'A'
+					break
+				case 11:
+					number = 'B'
+					break
+				case 12:
+					number = 'C'
+					break
+				case 13:
+					number = 'D'
+					break
+				case 14:
+					number = 'E'
+					break
+				case 15:
+					number = 'F'
+					break
+			}
+			return number
+		}
+
+		function ScaleToTen(num,nowScale) {
+			var number
+			var converted = 0
+
+			if (nowScale == 10) {
+				return num
+			}else {
+				for(var i = 0;num > 0; i++){
+					var time = 1
+					number = num % 10
+					num = Math.floor(num /= 10)
+					for(var k = 0;i > k;k++) {
+						time = time * nowScale
+					}
+					converted += number * time
+				}
+				return converted
+			}
+		}
+	}
+</script>
+</html>
